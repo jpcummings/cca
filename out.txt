@@ -1,0 +1,138 @@
+Using column 13 for credit_hrs PHYS470 30529  1.0
+Using column 13 for credit_hrs MATH010 42818  3.0
+Using column 13 for credit_hrs ENVA220 42466  3.0
+Using column 13 for credit_hrs ENVA220 42466  3.0
+dept cost/course rev/course margin/course enrollment
+PHYS 11573.29 20026.02   8452.74 19.8
+None
+dept cost/course rev/course margin/course enrollment
+BIOL 15197.51 17806.57   2609.06 18.7
+None
+dept cost/course rev/course margin/course enrollment
+CHEM 11614.09 14938.27   3324.18 18.3
+None
+dept cost/course rev/course margin/course enrollment
+MATH 10263.44 16614.72   6351.28 17.5
+None
+dept cost/course rev/course margin/course enrollment
+CSIS 9014.17 13249.50   4235.33 18.1
+None
+dept cost/course rev/course margin/course enrollment
+ENVA 12169.42 14625.84   2456.41 14.2
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%
+PHYS
+%%%%%%%%%%%%%%%%%%%%%%%
+total revenue = 2.4832e+06
+total cost = 1.5118e+06
+total margin = 9.7147e+05
+total student credit hours        =  5720.0
+average class size        = 19.8
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%
+BIOL
+%%%%%%%%%%%%%%%%%%%%%%%
+total revenue = 4.1133e+06
+total cost = 3.7093e+06
+total margin = 4.0403e+05
+total student credit hours        =  8917.0
+average class size        = 18.7
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%
+CHEM
+%%%%%%%%%%%%%%%%%%%%%%%
+total revenue = 3.0474e+06
+total cost = 2.4789e+06
+total margin = 5.6847e+05
+total student credit hours        =  6774.0
+average class size        = 18.3
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%
+MATH
+%%%%%%%%%%%%%%%%%%%%%%%
+total revenue = 2.8577e+06
+total cost = 1.8170e+06
+total margin = 1.0408e+06
+total student credit hours        =  6757.0
+average class size        = 17.5
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%
+CSIS
+%%%%%%%%%%%%%%%%%%%%%%%
+total revenue = 3.8159e+06
+total cost = 2.6947e+06
+total margin = 1.1211e+06
+total student credit hours        =  8478.0
+average class size        = 18.1
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%
+ENVA
+%%%%%%%%%%%%%%%%%%%%%%%
+total revenue = 9.5068e+05
+total cost = 8.5968e+05
+total margin = 9.1000e+04
+total student credit hours        =  2263.0
+average class size        = 14.2
+None
+                     Ours    Austen
+PHYS
+   revenue per SCH   434.1  470.0 
+   cost    per SCH   264.3  346.0 
+   margin  per SCH   183.2  124.0 
+BIOL
+   revenue per SCH   461.3  458.0 
+   cost    per SCH   416.0  411.0 
+   margin  per SCH    67.6   46.0 
+CHEM
+   revenue per SCH   449.9  418.0 
+   cost    per SCH   365.9  360.0 
+   margin  per SCH   100.1   58.0 
+MATH
+   revenue per SCH   422.9  393.0 
+   cost    per SCH   268.9  286.0 
+   margin  per SCH   161.7  107.0 
+CSIS
+   revenue per SCH   450.1  517.0 
+   cost    per SCH   317.9  320.0 
+   margin  per SCH   143.9  196.0 
+ENVA
+   revenue per SCH   420.1  509.0 
+   cost    per SCH   379.9  353.0 
+   margin  per SCH    70.6  155.0 
+                              Ours         Austen    Percent Diff
+PHYS
+   revenue total per 2 year   2.4832e+06  2.7395e+06  -9.4
+   cost    total per 2 year   1.5118e+06  2.0139e+06 -24.9
+   margin  total per 2 year   9.7147e+05  7.2564e+05  33.9
+   margin  as percent of cost   64.3        36.0 
+BIOL
+   revenue total per 2 year   4.1133e+06  4.2422e+06  -3.0
+   cost    total per 2 year   3.7093e+06  3.8094e+06  -2.6
+   margin  total per 2 year   4.0403e+05  4.3277e+05  -6.6
+   margin  as percent of cost   10.9        11.4 
+CHEM
+   revenue total per 2 year   3.0474e+06  2.8775e+06   5.9
+   cost    total per 2 year   2.4789e+06  2.4782e+06   0.0
+   margin  total per 2 year   5.6847e+05  3.9933e+05  42.4
+   margin  as percent of cost   22.9        16.1 
+MATH
+   revenue total per 2 year   2.8577e+06  2.7186e+06   5.1
+   cost    total per 2 year   1.8170e+06  1.9782e+06  -8.2
+   margin  total per 2 year   1.0408e+06  7.4037e+05  40.6
+   margin  as percent of cost   57.3        37.4 
+CSIS
+   revenue total per 2 year   3.8159e+06  4.4201e+06 -13.7
+   cost    total per 2 year   2.6947e+06  2.7367e+06  -1.5
+   margin  total per 2 year   1.1211e+06  1.6833e+06 -33.4
+   margin  as percent of cost   41.6        61.5 
+ENVA
+   revenue total per 2 year   9.5068e+05  1.1884e+06 -20.0
+   cost    total per 2 year   8.5968e+05  8.2560e+05   4.1
+   margin  total per 2 year   9.1000e+04  3.6279e+05 -74.9
+   margin  as percent of cost   10.6        43.9 

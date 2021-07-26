@@ -1,0 +1,698 @@
+
+Some results:
+
+Starting with 2015-2016 actual instructional costs from startegic plan, itemized in ICTF documents:
+	Salaries:	$18,102,198
+	Fringes:	$  7,795,856
+or a total of
+	$25,898,054
+
+
+Run with fac_dat_2015.xlsx:
+	=> using 2015-2016 numbers for number of faculty and students (factbook)
+	=> using guesses at average salaries by rank only, not looking at variation in different schools.  
+	=> Using 0.4*salary for an estimate of benefits.
+	=> using 1/6 asst for 1st year asst.
+	=> using 3/4 for workload for all TT and T fac
+	=> assume average section size of 21
+
+% ./spc.py -i fac_dat_2015.xlsx
+Total: 21248959.02
+
+
+Run with fac_dat_2015_Schools.xlsx:
+	=> using 2015-2016 numbers for number of students (factbook)
+	=> using 2015-2016 numbers for faculty by rank and by school (Laurie Fay, agrees with factbook +/- 1 or 2)
+	=> using average salaries by rank and by school, from Laurie Fay. 
+	=> Using 0.4*salary for an estimate of benefits.
+	=> ignoring 1st year asst.
+	=> using 3/4 for workload for all TT and T fac
+	=> assume average section size of 21
+
+%  ./spc.py -i fac_dat_Schools.xlsx
+Total: 21158994.25
+
+
+Run with fac_dat_Schools_true_rel.xlsx:
+	=> same as last run, but...
+	=> using "true" workload (by school)  for all TT and T fac
+
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx
+Total: 26623228.79
+
+Looks like a pretty good baseline.
+
+===============================================================
+Look at the effect of section size again:
+	=> faculty mix is held constant
+
+%  ./spc.py -S -i fac_dat_Schools_true_rel.xlsx -b 26623228.79
+15 37272520.30 -10649291.51
+16 34942987.78 -8319758.99
+17 32887517.91 -6264289.12
+18 31060433.58 -4437204.79
+19 29425673.92 -2802445.13
+20 27954390.23 -1331161.44
+21 26623228.79 0.00
+22 25413082.02 1210146.77
+23 24308165.41 2315063.38
+24 23295325.19 3327903.60
+25 22363512.18 4259716.61
+26 21503377.10 5119851.69
+27 20706955.72 5916273.07
+28 19967421.59 6655807.20
+29 19278889.81 7344338.98
+30 18636260.15 7986968.64
+
+Look at the number of each rank at 21 and 25
+
+21 26623228.79 0.00
+ad: 30.95 vi: 23.37 ast: 31.16 asc: 43.91 fp: 41.07
+25 22363512.18 4259716.61
+ad: 26.19 vi: 19.77 ast: 26.37 asc: 37.15 fp: 34.75
+
+delta:  ad: 4.76 vi: 3.60 ast: 4.79 asc: 6.76 fp: 6.32
+
+
+=======================================================================
+From Jim Matthews: what if we replace T (full) in each department with CTF if Visitors/ALL < 0.2?
+	=> looked at ratios in Spring 2016
+	=> this would be 5 fac in AD (EDUC, ENGL, POSC, PSYC, RELG) and 1 in BD (FINC)
+
+%  ./spc.py -i dat/fac_dat_Schools_true_rel_JM6.xlsx -b 26623228.79
+Total: 26025503.90 Savings: 597724.89
+
+Seems like a lot, but you get the salary differential, plus workload 0.57 -> 1 !
+
+===> NOTE: these seem to have an issue.  I think the inpuit files got corrupted.  I'm redoing this below.
+===> 
+===> Lets run a few scenrios:  FD_20p_vis is visitors about 20% full time which we are currently at,
+===> FD_25p_vis is about 25% (JM scenario), and FD_30p_vis is 30%
+===> 
+===> % ./spc.py -i dat/FD_20p_vis.xlsx  -b 26623228.79
+===> Total: 26623228.79 Savings: 0.00
+===> % ./spc.py -i dat/FD_25p_vis.xlsx  -b 26623228.79
+===> Total: 26025361.65 Savings: 597867.14
+===> % ./spc.py -i FD_30p_vis.xlsx  -b 26623228.79
+===> Total: 25626926.03 Savings: 996302.76
+===> % 
+
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx
+26623998.18
+
+% ./spc.py -i dat/fac_dat_Schools_true_rel_JM6.xlsx
+26025503.90
+% hoc -e '26623998.18-'`{./spc.py -i dat/fac_dat_Schools_true_rel_JM6.xlsx}
+598494.2800000012
+
+% ./spc.py -i dat/FD_25p_vis-TT.xlsx
+24866473.51
+% hoc -e '26623998.18-'`{./spc.py -i dat/FD_25p_vis-TT.xlsx}
+1757524.669999998
+
+
+======================================================================
+What is the effect of changing sabbaticals?
+
+
+% for (i in `{seq 0 10 90}) {
+	echo $i  `{./spc.py -i 'FD_'^$i^'p_sab.xlsx' -b 26623086.54| awk '{print $2, $4;}'}
+}
+0 23960736.44 2662350.10
+10 24196126.88 2426959.66
+20 24437588.48 2185498.06
+30 24685388.66 1937697.88
+40 24939812.24 1683274.30
+50 25201162.86 1421923.68
+60 25469764.73 1153321.81
+70 25745964.45 877122.09
+80 26030133.11 592953.43
+90 26322668.59 300417.95
+100 26623086.54 0.00
+
+=====================================================
+What is the effect of "tightening up" on release time?
+
+What if we reduce the amount of Professional Development RT by 10%
+
+%  ./spc.py -i fac_dat_Schools_90_rel.xlsx  -b 26623228.79
+Total: 25782232.09 Savings: 840996.70
+or 20%?
+% ./spc.py -i fac_dat_Schools_80_rel.xlsx  -b 26623228.79
+Total: 24962923.27 Savings: 1660305.52
+
+Savings due to release time decreases, as a function of % current pd release time  granted
+% for (i in `{seq 0 10 90}) {
+	echo $i  `{./spc.py -i 'FD_'^$i^'p_RT.xlsx' -b 26623086.54| awk '{print $2, $4;}'}
+}
+0 20164564.82 6458521.72
+10 20648215.31 5974871.23
+20 21159644.34 5463442.20
+30 21701316.10 4921770.44
+40 22275995.12 4347091.42
+50 22886793.54 3736293.00
+60 23537227.44 3085859.10
+70 24231284.67 2391801.87
+80 24973506.66 1649579.88
+90 25769087.99 853998.55
+
+=======================================================
+What about tightening up on only administrative release time.  This is release time that is not PD, sabbatical or part schedule related.
+
+% for (i in `{seq 0 10 100}) {
+		cost=`{./spc.py -i 'dat/adm-rel-study/FD_'^$i^'p_RT.xlsx'}
+			echo $i $cost `{hoc -e '26623998.18-'$cost''}
+		}
+
+0 23023896.93 3600101.25
+10 23333464.29 3290533.89
+20 23652804.86 2971193.32
+30 23982395.13 2641603.05
+40 24322743.48 2301254.70
+50 24674392.91 1949605.27
+60 25037924.12 1586074.06
+70 25413958.82 1210039.36
+80 25803163.51 820834.67
+90 26206253.63 417744.56
+100 26623998.18 0
+
+The colums are percent of current release time granted (90% means a 10% reduction from current values), the cost, and the savings relative to 100%
+
+=====================================================
+Replacing visitors with adjuncts, as a function of % visitors kept
+
+
+% for (i in `{seq 0 10 100}) {
+	echo $i  `{./spc.py -i 'FD_'^$i^'p_vis.xlsx' -b 26623086.54| awk '{print $4;}'}
+}
+0 25410364.27 1212722.27
+10 25531636.49 1091450.05
+20 25652908.72 970177.82
+30 25774180.95 848905.59
+40 25895453.18 727633.36
+50 26016725.40 606361.14
+60 26137997.63 485088.91
+70 26259269.86 363816.68
+80 26380542.08 242544.46
+90 26501814.31 121272.23
+100 26623086.54 0.00
+% 
+
+=====================================================
+try some models combining these actions:
+
+========================
+Model 001:
+20% visitors in all dpearments.
+10% reduction in PD release 
+10% reduction in adminstrative
+change class size to 23
+
+baseline:
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx
+26623998.18
+
+20% visitors in all dpearments:
+./spc.py -i dat/Model001.xlsx
+26025361.65
+
+10% reduction in PD release 
+10% reduction in adminstrative
+% ./spc.py -i dat/Model001.xlsx
+24444981.78
+
+change class size from 21 to 23:
+% ./spc.py -i dat/Model001.xlsx -m 23
+22319331.19
+
+total: 4304666.99
+
+change in faculty by rank:
+> o<-c(32.42,24.48,56.44,79.63,74.24)
+> n<-c(29.60,26.42,47.95,67.66,56.40)
+> n-o
+[1]  -2.82   1.94  -8.49 -11.97 -17.84
+Total TT -38.30
+
+==>Thu Jan 11 10:36:43 EST 2018
+Update for better definition of Administrative release time.
+
+baseline:
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx -n
+26623998.18
+adjunct visitor assistant associate full
+32.42 24.48  56.44  79.63 74.24
+% 
+
+10% reduction in PD release 
+10% reduction in adminstrative
+% ./spc.py -i dat/Model001.xlsx -n
+24836507.15
+adjunct visitor assistant associate full
+32.42 28.93  53.48  75.47 62.90
+
+change class size from 21 to 23:
+% ./spc.py -i dat/Model001.xlsx -m 23 -n
+22676810.87
+adjunct, visitor, assistant, associate, full
+29.60, 26.42,  48.83,  68.91, 57.43
+
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model001.xlsx -m 23}
+3947187.3099999985
+
+delta faculty:
+> n
+[1] 29.60 26.42 48.83 68.91 57.43
+> o
+[1] 32.42 24.48 56.44 79.63 74.24
+> n-o
+[1]  -2.82   1.94  -7.61 -10.72 -16.81
+
+
+change class size from 21 to 24:
+% ./spc.py -i dat/Model001.xlsx -m 24 -n
+21731943.75
+adjunct, visitor, assistant, associate, full
+28.37, 25.32,  46.80,  66.04, 55.04
+
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model001.xlsx -m 24}
+4892054.43
+
+delta faculty:
+> n
+[1] 28.37 25.32 46.80 66.04 55.04
+> o
+[1] 32.42 24.48 56.44 79.63 74.24
+> n-o
+[1]  -4.05   0.84  -9.64 -13.59 -19.20
+
+
+
+
+========================
+Model 002:
+25% visitors in all dpearments.
+10% reduction in PD release 
+10% reduction in adminstrative
+change class size to 22
+
+baseline:
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx
+26623998.18
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model002.xlsx -m 22}
+4168574.6400000004
+
+change in faculty by rank:
+> o<-c(32.42,24.48,56.44,79.63,74.24)
+> n<-c(30.95,36.12,45.44,66.04,54.27)
+> n-o
+[1]  -1.47  11.64 -11.00 -13.59 -19.97
+Total TT -44.56
+
+
+==>Thu Jan 11 10:36:43 EST 2018
+Update for better definition of Administrative release time.
+
+baseline:
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx -n
+26623998.18
+adjunct visitor assistant associate full
+32.42 24.48  56.44  79.63 74.24
+% 
+
+% ./spc.py -i dat/Model002.xlsx -m 22 -n
+22800060.13
+adjunct, visitor, assistant, associate, full
+30.95, 36.12,  46.27,  67.26, 55.26
+
+
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model002.xlsx -m 22}
+3823938.0500000009
+
+delta faculty:
+> n
+[1] 30.95 36.12 46.27 67.26 55.26
+> o
+[1] 32.42 24.48 56.44 79.63 74.24
+> n-o
+[1]  -1.47  11.64 -10.17 -12.37 -18.98
+
+
+========================
+Model 003:
+No change visitors
+10% reduction in adminstrative
+change class size to 24
+% hoc -e '26623998.18-'`{./spc.py  -i dat/Model003.xlsx -m 24}
+4076046.19
+
+change in faculty by rank:
+> o<-c(32.42,24.48,56.44,79.63,74.24)
+> n<-c(28.37,21.42,47.61,67.17,62.62)
+> n-o
+[1]  -4.05  -3.06  -8.83 -12.46 -11.62
+Total TT -32.91
+
+
+==>Thu Jan 11 10:36:43 EST 2018
+Update for better definition of Administrative release time.
+
+baseline:
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx -n
+26623998.18
+adjunct visitor assistant associate full
+32.42 24.48  56.44  79.63 74.24
+% 
+
+% ./spc.py -i dat/Model003.xlsx -m 24 -n
+22930471.92
+adjunct, visitor, assistant, associate, full
+28.37, 21.42,  48.51,  68.45, 63.80
+
+
+% hoc -e '26623998.18-'`{./spc.py  -i dat/Model003.xlsx -m 24}
+3693526.259999998
+
+delta faulty:
+> n
+[1] 28.37 21.42 48.51 68.45 63.80
+> o
+[1] 32.42 24.48 56.44 79.63 74.24
+> n-o
+[1]  -4.05  -3.06  -7.93 -11.18 -10.44
+Total TT -29.55
+
+
+========================
+Model004:
+change class size to 25
+% hoc -e '26623998.18-'`{./spc.py  -i dat/fac_dat_Schools_true_rel.xlsx -m 25}
+4259839.710000001
+change in faculty by rank:
+> o<-c(32.42,24.48,56.44,79.63,74.24)
+> n<-c(27.23,20.57,47.41,66.89,62.36)
+> n-o
+[1]  -5.19  -3.91  -9.03 -12.74 -11.88
+Total TT -33.65
+
+Summary of changes to TT faculty:
+Model001: -38.30
+Model002: -44.56
+Model003: -32.91
+Model004: -33.65
+
+to estimate how long it will take, we need to know the average departure rate.  I estimate with 203 TT faculty with a "work life" of 35 years, we should have 203/35 = 5.7 retirements/year.
+
+From Laurie Fay's data, the five year resignation rate is 3.8/yr and the retirement rate is 6.2/year (checks with my estimate) for a total departure rate of ~ 10/yr.  Let's assume we need toreplace 1/2 of these, so we get a net rate of 5/yr.
+
+This gives us with the above numbers:
+Model001: -38.30 => 7.66 yr
+Model002: -44.56 => 8.91 yr
+Model003: -32.91 => 6.58 yr
+Model004: -33.65 => 6.73 yr 
+
+
+========================
+Model005:
+
+eliminate all contingent faculty
+hmm... misspoke greatly at last meeting.  I gave the amount we pay contingent faculty, not what the cost difference is if we got rid of all contingent faculty.  If we keep the class size at 21, we have to hire a lot of TT faculty:
+
+% hoc -e '26623998.18-'`{./spc.py  -i dat/Model005.xlsx -m 21}
+-8286514.689999998
+% hoc -e '26623998.18-'`{./spc.py  -i dat/Model005.xlsx -m 25}
+-2700832.629999999
+% ./spc.py  -i dat/Model005.xlsx -n -m 21
+34910512.87
+adjunct visitor assistant associate full
+0.00 0.00  82.83  116.86 108.96
+% ./spc.py  -i dat/Model005.xlsx -n -m 25
+29324830.81
+adjunct visitor assistant associate full
+0.00 0.00  69.58  98.17 91.53
+% ./spc.py  -i dat/fac_dat_Schools_true_rel.xlsx -n -m 21
+26623998.18
+adjunct visitor assistant associate full
+32.42 24.48  56.44  79.63 74.24
+% 
+
+so it costs us $8M if we keep class size at 21.  Even if we increase class size to 25, it costs us $2.7M.
+% for (mm in `{seq 21 30}) {
+	echo -n $mm^' '
+	hoc -e '26623998.18-'`{./spc.py  -i dat/Model005.xlsx -m $mm}
+}
+
+21 -8286514.689999998
+22 -6699673.199999999
+23 -5250817.920000002
+24 -3922700.580000002
+25 -2700832.629999999
+26 -1572954.5300000012
+27 -528622.9400000013
+28 441113.51999999958
+29 1343971.620000001
+30 2186639.169999998
+% 
+we have to go to a class size of 28 to break even, and even at 30 we only save $2.1M.
+
+% ./spc.py  -i dat/Model005.xlsx -n -m 28 -n
+26182884.66
+adjunct, visitor, assistant, associate, full
+0.00, 0.00,  62.13,  87.65, 81.72
+
+delta faculty:
+> n
+[1]  0.00  0.00 62.13 87.65 81.72
+> o
+[1] 32.42 24.48 56.44 79.63 74.24
+> n-o
+[1] -32.42 -24.48   5.69   8.02   7.48
+
+
+========================
+Model006:
+first crack at contact/credit fix
+
+./spc.py  -i dat/Model006.xlsx -m 21
+3 wl/3 contact = 2 rl
+29159982.25
+saves: 0.00
+
+2 wl/3 contact = 1 rl
+27668638.77
+saves: 1491343.48
+
+1.5 wl/3 contact 0.5 rl
+27104039.82
+saves: 2055942.42
+
+1 wl/3 contact = 0 rl
+26623998.18
+saves: 2535984.07
+
+this has some problems: using same average size as lectures (default 21 instead of 14).  we should be using a differrent average class size in each faculty group.  this would allow us to look at things like changing FYS size also.  double check formula to incorporate into "effective release time"
+
+===========================
+Model007:
+second crack.  added 6 faculty "classes" in sos just for labs.  these have a different FTE value to account for contact/credit difference as an effective release time.  from Spring 2018 roster (CourseCountFall201730..., see logbook), we get about 319 lab contact hours vs 392 lecture contact hours.   At 1:1 contact:credit, none of this would be granted as "release time", but currently we get 2 effective hours of release time per lab section (on average).  Run model at
+
+3:1 -> 200 hrs "RT" (current)
+2:1 -> 150 hrs "RT" 
+1:1 -> 0 hrs  "RT"
+
+% ./spc.py -i dat/Model007.xlsx -m 21 # 200
+27852437.76
+% ./spc.py -i dat/Model007.xlsx -m 21 # 150
+27457246.63
+% ./spc.py -i dat/Model007.xlsx -m 21 # 0
+26623998.18
+% hoc
+27852437-27457246
+395191
+27457246-26623998
+833248
+
+
+===========================
+Model008:
+Model based on faculty survey results.
+- increase class size to 23
+- increase FT contingent faculty to 20%
+- replace 10% of visiting faculty with adjuncts
+- increase accountability for sabbatical anf reassigned time.
+
+baseline:
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx -n -e -d
+26623998.18
+adjunct, visitor, assistant, associate, full
+32.42, 24.48,  56.44,  79.63, 74.24
+% 
+
+- increase FT contingent faculty to 20%
+- replace 10% of visiting faculty with adjuncts
+- increase accountability for sabbatical anf reassigned time.
+% ./spc.py -i dat/Model008.xlsx -n
+24378923.23
+adjunct, visitor, assistant, associate, full
+36.13, 27.45,  53.48,  74.24, 60.40
+
+> o
+[1] 32.42 24.48 56.44 79.63 74.24
+> n
+[1] 36.13 27.45 53.48 74.24 60.40
+> n-o
+[1]   3.71   2.97  -2.96  -5.39 -13.84
+
+change class size from 21 to 23:
+% ./spc.py -i dat/Model008.xlsx -m 23 -n -e
+22259016.86
+adjunct, visitor, assistant, associate, full
+32.99, 25.06,  48.83,  67.78, 55.15
+
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model008.xlsx -m 23}
+4364981.32
+
+> o<-c(32.42, 24.48,  56.44,  79.63, 74.24)
+> n<-c(32.99, 25.06,  48.83,  67.78, 55.15)
+> n-o
+[1]   0.57   0.58  -7.61 -11.85 -19.09
+
+change class size from 21 to 24:
+% ./spc.py -i dat/Model008.xlsx -m 24 -n
+21331557.82
+adjunct, visitor, assistant, associate, full
+31.61, 24.02,  46.80,  64.96, 52.85
+
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model008.xlsx -m 24}
+5292440.359999999
+
+> o<-c(32.42, 24.48,  56.44,  79.63, 74.24)
+> n<-c(31.61, 24.02,  46.80,  64.96, 52.85)
+> n-o
+[1]  -0.81  -0.46  -9.64 -14.67 -21.39
+
+
+===========================
+Model009:
+Semi-final
+- increase class size to 24
+- increase FT contingent faculty to 25%
+
+baseline:
+% ./spc.py -i dat/fac_dat_Schools_true_rel.xlsx -n -e -d
+26623998.18
+adjunct, visitor, assistant, associate, full
+32.42, 24.48,  56.44,  79.63, 74.24
+adjunct, visitor, assistant, associate, full
+32.42, 24.48,  32.64,  46.00, 43.03
+
+
+% ./spc.py -i dat/Model009.xlsx -n -e
+25629220.97
+adjunct, visitor, assistant, associate, full
+32.42, 33.38,  52.49,  73.03, 68.99
+adjunct, visitor, assistant, associate, full
+32.42, 33.38,  30.42,  42.29, 40.06
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model009.xlsx}
+994777.2100000009
+
+% ./spc.py -i dat/Model009.xlsx -n -e -m 23
+23400593.06
+adjunct, visitor, assistant, associate, full
+29.60, 30.48,  47.93,  66.68, 62.99
+adjunct, visitor, assistant, associate, full
+29.60, 30.48,  27.77,  38.61, 36.58
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model009.xlsx -m 23}
+3223405.120000001
+
+% ./spc.py -i dat/Model009.xlsx -n -e -m 24
+22425568.35
+adjunct, visitor, assistant, associate, full
+28.37, 29.21,  45.93,  63.91, 60.37
+adjunct, visitor, assistant, associate, full
+28.37, 29.21,  26.62,  37.00, 35.05
+% hoc -e '26623998.18-'`{./spc.py -i dat/Model009.xlsx -m 24}
+4198429.829999998
+
+> o<-c(32.42, 24.48,  56.44,  79.63, 74.24)
+> n<-c(28.37, 29.21,  45.93,  63.91, 60.37)
+> n-o
+[1]  -4.05   4.73 -10.51 -15.72 -13.87
+> true<-c(43.7,39,44,62,52)
+> true+n-o
+[1] 39.65 43.73 33.49 46.28 38.13
+> ntrue<-true+n-o
+> ntrue[2:5]/sum(ntrue[2:5])
+[1] 0.2705562 0.2072016 0.2863330 0.2359092
+> true[2:5]/sum(true[2:5])
+[1] 0.1979695 0.2233503 0.3147208 0.2639594
+
+
+==================================
+notes:
+a plea for indulgence.  we can't think in two different ways at once: writing: creating vs editing.  we are writing now, just getting down ideas.   we must go back and edit later, but editing now will harm the final product.
+right know, i'm just thinking about possibilities, not worrying as much about which is the right one.  if i say things that seem heinous, like "we could replace all visitors with adjuncts" or "we could stop giving sabbaticals" it's because right now i'm in brain dump mode, we all need to edit later.
+
+also, this reminds me of physiology class in HS.  we were dissecting cats, and the first day we took them out of the bags and washed them.  the second day we did external observations of the cats, etc.  one day a few weeks into the class, some friends walked by who were not taking the class.  we excitedly called them all in to see our cats, and we were surprised they were disgusted by the cats.  we had acclimated, they had not.
+
+Almost all these scenarios rely on shifting workload to lower paid people, which obviously only saves money if we reduce the number of higher paid people.  In the case of tenured faculty this takes longer; visitors could be a little quicker, but we would probably have trouble finding enough adjuncts.
+
+These are all looking at only the compensation part of the budget.  We also must consider the other ~20% of the budget (~6M).
+
+to do:
+draft a table of possible savings and impacts(monday night)
+Remake instructional cost plots savings axes should go - 5 to 5 million
+Cost plot should go 0 to 30 million
+Fix the problem with ftes versus body in size plot
+Calculate a gradient
+	Problem with gradient method is the function doesn't have cost built-in so we might be taking a step in a direction that decreases dollars but doesn't take into account the pain
+Get retirement data from Aaron, estimate timeline
+Calculate cost as a function of number of students
+
+
+data to get:
+true benefits - cynthia
+(done) average salaries - cynthia, laurie
+(done) number of students-sections -  OK?
+(done) true reassigned time - laurie 
+retirement rates to predict timeline for savings of various types.
+impact - us news and world report:
+	average expenditures for instruction, research, student services and educational expenditures (10%)
+	student to faculty ratio (1%)
+	class size under 20 (8%)
+other part of budget
+
+
+
+questions to answer:
+(done) do a range for tightened PD release time. 100% 90% 80%
+(done) do a range for replacing visitors with adjuncts
+(done) do a range for replacing TT with visitors
+(done) do a range for sabbatical reduction
+lab costs - me - use workload by school?
+external tuition benefit
+part schedule teaching
+administrative release time
+plot of # fac by rank for different average class sizes
+
+
+early sabbatical
+
+
+lab/lecture
+pace of retirements
+mixes of tweaks:
+
+change class size to 23
+10% reduction in PD release 
+10% reduction in adminstrative
+20% visitors in all dpearments.
+
+
+use true contact hours
+
+
+CIC financial index?
+
+
+

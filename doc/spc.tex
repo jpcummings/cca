@@ -1,0 +1,54 @@
+\documentclass[12pt]{article}
+
+\title{ICTF-modeling}
+\author{Chuck Seifert, Aaron Pacitti, John Cummings}
+\date{October 2017}
+
+\begin{document}
+
+
+
+\maketitle
+
+\section{Introduction}
+
+The data modeling subgroup is working on a model to calulate cost.  We want to develop a model that allows twiddling of ``knobs'' to investigate the effect of changing quantities such as the average class size or the fraction of various types of faculty. For these purposes, splitting faculty into groups of similar costs such as salaries and workloads will allow us to calaculate a total cost from average values for each group with only small error introduced.
+
+
+\[
+{\rm cost} =  \sum_i C_i
+\]
+
+where $C_i$ is the cost of an individual group of faculty, segregated currently by rank (Full, Associate, Assistant, Visitor, and Adjunct).
+
+The cost per group, $C_i$, is simply found by multiplying the {\em true} number of faculty in that group by the average cost of a faculty member in that vategory,
+
+\[
+C_i = N_i c_i
+\]
+
+\vspace{1cm}
+$N_i$ if calculated from $N_{FTE}$ by assuming each group makes up a fraction $f_i$ of the total instructional staff, 
+
+\[
+N_i = W_if_iN_{FTE}
+\]
+
+and $W_i$ is a scaling factor to account for release time, and is essentially the one over the fraction of an FTE a person in that group represents.  We get $N_{\rm FTE}$, the number of faculty FTEs required to teach classes that year, by dividing the total number of seats taught in a year by the average class size:
+
+\[
+N_{FTE} = \frac{N_{\rm stud}10 {\rm classes}/{\rm yr}}{\overline{N_c}}
+\]
+where $\overline{N_c}$ is the average class size.
+
+\vspace{1cm}
+The cost of an individual in a group $c_i$ is found
+
+\[
+c_i = S_i + B_i
+\]
+
+where $S_i$ is the average salary of that group, and $B_i$ is the cost of benefits.
+
+
+\end{document}

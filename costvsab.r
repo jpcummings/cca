@@ -1,0 +1,7 @@
+dat <-read.table("costvsab.dat")
+options(scipen=5)
+par(cex=1)
+plot(dat[,1],dat[,2]/1000000,main="Sabbaticals",xlab="% 2015 sabbaticals",ylab="cost [M$]",type="l")
+dev.copy2pdf(file="costvsab.pdf")
+dev.copy(jpeg,'costvsab.jpg')
+dev.off()

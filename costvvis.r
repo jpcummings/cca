@@ -1,0 +1,7 @@
+dat <-read.table("costvvis.dat")
+options(scipen=5)
+par(cex=1)
+plot(dat[,1],dat[,2]/1000000,main="Visitors replaced with adjuncts",xlab="% 2015 visitors",ylab="cost [M$]",type="l")
+dev.copy2pdf(file="costvvis.pdf")
+dev.copy(jpeg,'costvvis.jpg')
+dev.off()

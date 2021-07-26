@@ -1,0 +1,7 @@
+dat <-read.table("costvsize.dat")
+options(scipen=5)
+par(cex=1)
+plot(dat[,1],dat[,2]/1000000,xlab="mean class size",ylab="cost [M$]",type="l")
+dev.copy2pdf(file="costvsize.pdf")
+dev.copy(jpeg,'costvsize.jpg')
+dev.off()
